@@ -1,9 +1,12 @@
-AeroBull
-=================
+# Digital Currency Alarm
+
 Inspired by _Silicon Valley_ S05E03, bitcoin alarm created by Gilfoyle.
 
+### how to use
 
-[More Detail?](http://www.ifanr.com/1011696)
+1. install project dependencies, `python manager.py install_dependencies`
+1. run, `python manager.py run`
 
+### config
 
-[![](http://7xr586.com1.z0.glb.clouddn.com/images/l94jm.png)](https://www.youtube.com/watch?v=gz7IPTf1uts)
+1. adjust alarm threshold in `src/config/digital-currency.ts`

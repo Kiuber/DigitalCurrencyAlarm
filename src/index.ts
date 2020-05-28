@@ -1,25 +1,24 @@
-import {CronJob} from 'cron'
-import * as say from 'say'
+import { CronJob } from 'cron'
+import { Audio } from './enum/Audio'
+import { IPlayer } from "./interface/IPlayer"
+import { PlayerImpl } from './interface/impl/PlayerImpl'
+import { DigitalCurrencyCheckerImpl } from "./interface/impl/DigitalCurrencyImpl";
+import { config as digitalCurrencyConfig } from "./config/digital-currency"
 
-import {MP3Player} from './MP3Player'
-import {Audio} from './Audio'
-import {IPlayer} from "./IPlayer"
-import {ICheck} from "./checker/ICheck";
-import {BitcoinChecker} from "./checker/BitcoinChecker";
+let checkerClassMap = {};
+const player: IPlayer = new PlayerImpl();
 
-
-const player:IPlayer = new MP3Player()
-const checker:ICheck = new BitcoinChecker()
-
-say.speak("Hello, begin now...")
-
-new CronJob(
-    '*/5 * * * * *',
-    () => {
-        if (checker.check()) {
-            player.play(Audio.Roar)
+const cronTime = '*/10 * * * * *';
+const tickFn = function () {
+    for (const [currency, _] of Object.entries(digitalCurrencyConfig)) {
+        if (!checkerClassMap[currency]) {
+            checkerClassMap[currency] = new DigitalCurrencyCheckerImpl(currency);
         }
-    },
-    () => {},
-    true, /* Start the job right now */
-)
+        checkerClassMap[currency].checkAndGetMeetConditionCount().then((count) => {
+            for (let i = 0; i < count; i++) {
+                player.play(Audio.YOU_SUFFER)
+            }
+        });
+    }
+};
+new CronJob(cronTime, tickFn, () => {}, true);
